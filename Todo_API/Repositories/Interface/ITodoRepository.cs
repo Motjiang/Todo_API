@@ -3,8 +3,7 @@
 namespace Todo_API.Repositories.Interface
 {
     public interface ITodoRepository
-    {
-
+    {       
         Task<IEnumerable<Todo>> GetTodos();
         Task<Todo> GetTodoById(Guid id);
         Task<Todo> CreateTodoAsync(Todo todo);

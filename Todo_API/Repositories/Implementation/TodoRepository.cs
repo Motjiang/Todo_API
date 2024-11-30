@@ -1,10 +1,19 @@
-﻿using Todo_API.Models.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo_API.Data;
+using Todo_API.Models.Domain;
 using Todo_API.Repositories.Interface;
 
 namespace Todo_API.Repositories.Implementation
 {
     public class TodoRepository : ITodoRepository
     {
+        private readonly TodoDbContext _context;
+
+        public TodoRepository(TodoDbContext context)
+        {
+            _context = context;
+        }
+
         public Task<Todo> CreateTodoAsync(Todo todo)
         {
             throw new NotImplementedException();
@@ -20,9 +29,9 @@ namespace Todo_API.Repositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Todo>> GetTodos()
+        public async Task<IEnumerable<Todo>> GetTodos()
         {
-            throw new NotImplementedException();
+            return await _context.Todos.ToListAsync();
         }
 
         public Task<Todo> UpdateTodoAsync(Todo todo)
