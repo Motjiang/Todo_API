@@ -14,9 +14,11 @@ namespace Todo_API.Repositories.Implementation
             _context = context;
         }
 
-        public Task<Todo> CreateTodoAsync(Todo todo)
+        public async Task<Todo> CreateTodoAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            await _context.Todos.AddAsync(todo);
+            await _context.SaveChangesAsync();
+            return todo;
         }
 
         public Task<Todo> DeleteTodoAsync(Guid id)
