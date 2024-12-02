@@ -7,5 +7,7 @@
         public DateTime TaskCreatedDate { get; set; }
         public bool IsTaskCompleted { get; set; }
         public DateTime? TaskCompletedDate { get; set; }
+        public bool IsTaskDeleted { get; set; }
+        public DateTime? TaskDeletedDate { get; set; }
     }
 }

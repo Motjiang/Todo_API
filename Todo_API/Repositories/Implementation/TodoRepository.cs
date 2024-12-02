@@ -45,7 +45,7 @@ namespace Todo_API.Repositories.Implementation
 
         public async Task<IEnumerable<Todo>> GetTodos()
         {
-            return await _context.Todos.ToListAsync();
+            return await _context.Todos.Where(t => t.IsDeleted == false).OrderByDescending(t => t.CreatedDate).ToListAsync();
         }
 
         public async Task<Todo> UpdateTodoAsync(Todo todo)

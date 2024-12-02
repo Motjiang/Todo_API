@@ -92,36 +92,29 @@ namespace Todo_API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> DeleteTodo(TodoRequestDto request)
+        public async Task<IActionResult> DeleteTodo([FromRoute] Guid id)
         {
-            // Map TodoDto to Todo domain model
-            var todo = new Todo
-            {
-                Id = request.TaskId,
-                Description = request.TaskDescription,
-                CreatedDate = request.TaskCreatedDate,
-                IsCompleted = request.IsTaskCompleted,
-                CompletedDate = request.TaskCompletedDate
-            };
-
-            todo = await _todoRepository.DeleteTodoAsync(todo.Id);
+            // Retrieve the Todo by Id and delete it
+            var todo = await _todoRepository.DeleteTodoAsync(id);
 
             if (todo == null)
             {
                 return NotFound();
             }
 
-            // Map Todo domain model to TodoDto
+            // Map Todo domain model to TodoRequestDto (if needed for the response)
             var response = new TodoRequestDto
             {
                 TaskId = todo.Id,
                 TaskDescription = todo.Description,
                 TaskCreatedDate = todo.CreatedDate,
                 IsTaskCompleted = todo.IsCompleted,
-                TaskCompletedDate = todo.CompletedDate
+                TaskCompletedDate = todo.CompletedDate,
+                IsTaskDeleted = todo.IsDeleted,
+                TaskDeletedDate = todo.DeletedDate
             };
 
             return Ok(response);
-        }
+        }       
     }
 }
