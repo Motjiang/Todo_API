@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo_API.Models.Domain;
 using Todo_API.Models.DTO;
@@ -53,6 +54,74 @@ namespace Todo_API.Controllers
 
             return Ok(response);
 
+        }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateTodo([FromRoute] Guid id, TodoDto request)
+        {
+            // Map TodoDto to Todo domain model
+            var todo = new Todo
+            {
+                Id = id,
+                Description = request.TaskDescription,
+                CreatedDate = request.TaskCreatedDate,
+                IsCompleted = request.IsTaskCompleted,
+                CompletedDate = request.TaskCompletedDate
+            };
+
+            todo = await _todoRepository.UpdateTodoAsync(todo);
+
+            if(todo == null)
+            {
+                return NotFound();
+            }
+
+            // Map Todo domain model to TodoDto
+            var response = new TodoRequestDto
+            {
+                TaskId = todo.Id,
+                TaskDescription = todo.Description,
+                TaskCreatedDate = todo.CreatedDate,
+                IsTaskCompleted = todo.IsCompleted,
+                TaskCompletedDate = todo.CompletedDate
+            };
+
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteTodo(TodoRequestDto request)
+        {
+            // Map TodoDto to Todo domain model
+            var todo = new Todo
+            {
+                Id = request.TaskId,
+                Description = request.TaskDescription,
+                CreatedDate = request.TaskCreatedDate,
+                IsCompleted = request.IsTaskCompleted,
+                CompletedDate = request.TaskCompletedDate
+            };
+
+            todo = await _todoRepository.DeleteTodoAsync(todo.Id);
+
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            // Map Todo domain model to TodoDto
+            var response = new TodoRequestDto
+            {
+                TaskId = todo.Id,
+                TaskDescription = todo.Description,
+                TaskCreatedDate = todo.CreatedDate,
+                IsTaskCompleted = todo.IsCompleted,
+                TaskCompletedDate = todo.CompletedDate
+            };
+
+            return Ok(response);
         }
     }
 }

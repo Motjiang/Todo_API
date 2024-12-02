@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Todo_API.Data;
 using Todo_API.Models.Domain;
 using Todo_API.Repositories.Interface;
@@ -21,9 +22,20 @@ namespace Todo_API.Repositories.Implementation
             return todo;
         }
 
-        public Task<Todo> DeleteTodoAsync(Guid id)
+        public async Task<Todo> DeleteTodoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var existingtodo = await _context.Todos.FindAsync(id);
+
+            if (existingtodo != null)
+            {
+                existingtodo.IsDeleted = true;
+                existingtodo.DeletedDate = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return existingtodo;
+            }
+
+            return null;
         }
 
         public Task<Todo> GetTodoById(Guid id)
@@ -36,9 +48,20 @@ namespace Todo_API.Repositories.Implementation
             return await _context.Todos.ToListAsync();
         }
 
-        public Task<Todo> UpdateTodoAsync(Todo todo)
+        public async Task<Todo> UpdateTodoAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            var existingtodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == todo.Id);
+
+            if (existingtodo != null)
+            {
+                existingtodo.IsCompleted = todo.IsCompleted;
+                existingtodo.CompletedDate = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return existingtodo;
+            }
+
+            return null;
         }
     }
 }
