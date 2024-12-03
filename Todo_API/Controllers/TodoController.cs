@@ -118,10 +118,47 @@ namespace Todo_API.Controllers
         }
 
         [HttpGet]
+        [Route("getDeletedTodos")]
         public async Task<IActionResult> GetAllDeletedTodos()
         {
             var todos = await _todoRepository.GetDeletedTodos();
             return Ok(todos);
+        }
+
+        [HttpPut]
+        [Route("{id:Guid}/undoTodo")]
+        public async Task<IActionResult> UndoTodo([FromRoute] Guid id, TodoDto request)
+        {
+            // Map TodoDto to Todo domain model
+            var todo = new Todo
+            {
+                Id = id,
+                Description = request.TaskDescription,
+                CreatedDate = request.TaskCreatedDate,
+                IsCompleted = request.IsTaskCompleted,
+                CompletedDate = request.TaskCompletedDate
+            };
+
+            todo = await _todoRepository.UpdateUndoTodoAsync(todo);
+
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            // Map Todo domain model to TodoDto
+            var response = new TodoRequestDto
+            {
+                TaskId = todo.Id,
+                TaskDescription = todo.Description,
+                TaskCreatedDate = todo.CreatedDate,
+                IsTaskCompleted = todo.IsCompleted,
+                TaskCompletedDate = todo.CompletedDate,
+                IsTaskDeleted = todo.IsDeleted,
+                TaskDeletedDate = todo.DeletedDate
+            };
+
+            return Ok(response);
         }
     }
 }

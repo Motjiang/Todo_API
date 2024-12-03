@@ -10,5 +10,6 @@ namespace Todo_API.Repositories.Interface
         Task<Todo> UpdateTodoAsync(Todo todo);
         Task<Todo> DeleteTodoAsync(Guid id);
         Task<IEnumerable<Todo>> GetDeletedTodos();
+        Task<Todo> UpdateUndoTodoAsync(Todo todo);
     }
 }

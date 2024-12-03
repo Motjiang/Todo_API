@@ -42,6 +42,21 @@ namespace Todo_API.Repositories.Implementation
         {
             return await _context.Todos.Where(t => t.IsDeleted == true).OrderByDescending(t => t.CreatedDate).ToListAsync();
         }
+        public async Task<Todo> UpdateUndoTodoAsync(Todo todo)
+        {
+            var existingtodo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == todo.Id);
+
+            if (existingtodo != null)
+            {
+                existingtodo.IsDeleted = todo.IsDeleted;
+                existingtodo.DeletedDate = todo.DeletedDate;
+                await _context.SaveChangesAsync();
+
+                return existingtodo;
+            }
+
+            return null;
+        }
 
         public Task<Todo> GetTodoById(Guid id)
         {
