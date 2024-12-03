@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo_API.Models.Domain;
 using Todo_API.Models.DTO;
+using Todo_API.Models.Extentions;
 using Todo_API.Repositories.Interface;
 
 namespace Todo_API.Controllers
@@ -119,9 +120,11 @@ namespace Todo_API.Controllers
 
         [HttpGet]
         [Route("getDeletedTodos")]
-        public async Task<IActionResult> GetAllDeletedTodos()
+        public async Task<IActionResult> GetAllDeletedTodos([FromQuery]TodoParamsDto paramsDto)
         {
-            var todos = await _todoRepository.GetDeletedTodos();
+            var todos = await _todoRepository.GetDeletedTodos(paramsDto);
+
+            Response.AppPaginationHeader(todos.CurrentPage, todos.PageSize, todos.TotalCount, todos.TotalPages);
             return Ok(todos);
         }
 

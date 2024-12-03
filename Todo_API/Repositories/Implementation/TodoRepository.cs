@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Todo_API.Data;
 using Todo_API.Models.Domain;
+using Todo_API.Models.DTO;
+using Todo_API.Models.Helper;
 using Todo_API.Repositories.Interface;
 
 namespace Todo_API.Repositories.Implementation
@@ -38,9 +40,11 @@ namespace Todo_API.Repositories.Implementation
             return null;
         }
 
-        public async Task<IEnumerable<Todo>> GetDeletedTodos()
+        public async Task<PagedList<Todo>> GetDeletedTodos(TodoParamsDto paramsDto)
         {
-            return await _context.Todos.Where(t => t.IsDeleted == true).OrderByDescending(t => t.CreatedDate).ToListAsync();
+           var query = _context.Todos.Where(t => t.IsDeleted == true).OrderByDescending(t => t.CreatedDate).AsNoTracking();
+
+            return await PagedList<Todo>.CreateAsync(query, paramsDto.PageNumber, paramsDto.PageSize);
         }
         public async Task<Todo> UpdateUndoTodoAsync(Todo todo)
         {
