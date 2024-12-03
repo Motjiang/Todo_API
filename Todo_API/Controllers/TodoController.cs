@@ -115,6 +115,13 @@ namespace Todo_API.Controllers
             };
 
             return Ok(response);
-        }       
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllDeletedTodos()
+        {
+            var todos = await _todoRepository.GetDeletedTodos();
+            return Ok(todos);
+        }
     }
 }

@@ -38,6 +38,11 @@ namespace Todo_API.Repositories.Implementation
             return null;
         }
 
+        public async Task<IEnumerable<Todo>> GetDeletedTodos()
+        {
+            return await _context.Todos.Where(t => t.IsDeleted == true).OrderByDescending(t => t.CreatedDate).ToListAsync();
+        }
+
         public Task<Todo> GetTodoById(Guid id)
         {
             throw new NotImplementedException();
