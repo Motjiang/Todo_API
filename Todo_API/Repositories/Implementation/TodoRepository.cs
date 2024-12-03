@@ -19,6 +19,7 @@ namespace Todo_API.Repositories.Implementation
 
         public async Task<Todo> CreateTodoAsync(Todo todo)
         {
+            todo.CreatedDate = DateTime.Now;
             await _context.Todos.AddAsync(todo);
             await _context.SaveChangesAsync();
             return todo;
